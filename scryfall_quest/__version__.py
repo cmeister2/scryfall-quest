@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""Version information for this package."""
 
 VERSION = (0, 0, 1)
 
