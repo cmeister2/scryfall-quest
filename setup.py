@@ -1,52 +1,115 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from setuptools import setup
+# Note: To use the 'upload' functionality of this file, you must:
+#   $ pip install twine
 
-with open("VERSION", "rb") as f:
-    data = f.read()
-    version = data.decode("utf-8")
+import io
+import os
+import sys
+from shutil import rmtree
+
+from setuptools import find_packages, setup, Command
+
+# Package meta-data.
+NAME = "scryfall-quest"
+DESCRIPTION = "Python API for Scryfall.com using requests"
+URL = "https://github.com/cmeister2/scryfall-quest"
+EMAIL = "cmeister2@gmail.com"
+AUTHOR = "Max Dymond"
+
+# What packages are required for this module to be executed?
+REQUIRED = [
+    "requests",
+]
+
+# The rest you shouldn't have to touch too much :)
+# ------------------------------------------------
+# Except, perhaps the License and Trove Classifiers!
+# If you do change the License, remember to change the Trove Classifier for that!
+
+here = os.path.abspath(os.path.dirname(__file__))
+
+# Import the README and use it as the long-description.
+with io.open(os.path.join(here, "README.md"), encoding="utf-8") as f:
+    long_description = "\n" + f.read()
+
+# Load the package's __version__.py.py module as a dictionary.
+about = {}
+with open(os.path.join(here, "scryfall_quest", "__version__.py")) as f:
+    exec(f.read(), about)
 
 
-with open("LICENSE.txt", "rb") as f:
-    data = f.read()
-    license = data.decode("utf-8")
+class UploadCommand(Command):
+    """Support setup.py upload."""
+
+    description = "Build and publish the package."
+    user_options = []
+
+    @staticmethod
+    def status(s):
+        """Prints things in bold."""
+        print("\033[1m{0}\033[0m".format(s))
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        try:
+            self.status("Removing previous builds…")
+            rmtree(os.path.join(here, "dist"))
+        except OSError:
+            pass
+
+        self.status("Building Source and Wheel (universal) distribution…")
+        os.system("{0} setup.py sdist bdist_wheel --universal".format(sys.executable))
+
+        self.status("Uploading the package to PyPi via Twine…")
+        os.system("twine upload dist/*")
+
+        sys.exit()
 
 
-setup(name="scryfall-quest",
-      version=version,
-      description="Python API for Scryfall.com using requests",
-      url="https://github.com/cmeister2/scryfall-quest",
-      author="Max Dymond",
-      author_email="cmeister2@gmail.com",
-      license=license,
-      packages=["scryfall_quest"],
-      zip_safe=False,
-      classifiers=[
-          # How mature is this project? Common values are
-          #   3 - Alpha
-          #   4 - Beta
-          #   5 - Production/Stable
-          "Development Status :: 2 - Pre-Alpha",
+# Where the magic happens:
+setup(
+    name=NAME,
+    version=about["__version__"],
+    description=DESCRIPTION,
+    long_description=long_description,
+    author=AUTHOR,
+    author_email=EMAIL,
+    url=URL,
+    packages=find_packages(exclude=("tests",)),
+    # If your package is a single module, use this instead of 'packages':
+    # py_modules=['mypackage'],
 
-          # Indicate who your project is intended for
-          'Intended Audience :: Developers',
-
-          # Pick your license as you wish (should match "license" above)
-          'License :: OSI Approved :: MIT License',
-
-          # Specify the Python versions you support here. In particular, ensure
-          # that you indicate whether you support Python 2, Python 3 or both.
-          'Programming Language :: Python :: 2',
-          'Programming Language :: Python :: 2.7',
-          'Programming Language :: Python :: 3',
-          'Programming Language :: Python :: 3.3',
-          'Programming Language :: Python :: 3.4',
-          'Programming Language :: Python :: 3.5',
-          'Programming Language :: Python :: 3.6',
-      ],
-      install_requires=[
-          'requests',
-      ],
-      python_requires='>=2.6, !=3.0.*, !=3.1.*, !=3.2.*, <4',
-      )
+    # entry_points={
+    #     'console_scripts': ['mycli=mymodule:cli'],
+    # },
+    install_requires=REQUIRED,
+    python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, <4",
+    include_package_data=True,
+    license="MIT",
+    classifiers=[
+        # Trove classifiers
+        # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
+        "Development Status :: 2 - Pre-Alpha",
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.3",
+        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: Implementation :: CPython",
+        "Programming Language :: Python :: Implementation :: PyPy",
+    ],
+    # $ setup.py publish support.
+    cmdclass={
+        "upload": UploadCommand,
+    },
+)
