@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add dependency on `requests` - PATCH
 - Enforce `flake8` - PATCH
 - Enforce `pydocstyle` - PATCH
+- Add tests and `tox` testing. - PATCH
 
 ## 0.0.1 - 2018-02-25
 ### Added
