@@ -90,6 +90,7 @@ setup(
     #     'console_scripts': ['mycli=mymodule:cli'],
     # },
     install_requires=REQUIRED,
+    tests_require=["tox", "pytest"],
     python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, <4",
     include_package_data=True,
     license="MIT",

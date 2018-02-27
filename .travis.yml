@@ -13,4 +13,4 @@ before_script:
     - flake8 scryfall_quest
     - pydocstyle scryfall_quest
 script:
-    - echo "test"
+    - tox
